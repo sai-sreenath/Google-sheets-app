@@ -5,30 +5,19 @@ import { useForm } from "react-hook-form";
 
 function App() {
 
-  const {register, handleSubmit} = useForm();
+  const {register, handleSubmit, watch, formState: { errors }} = useForm();
 
   const submitFormToGoogle = (data) =>{
-
-    console.log(data);
-
-    const {name, age, salary, hobby} = data;
-
-    const tableData = {
-      name,
-      age,
-      salary,
-      hobby,
-    };
-
     axios
       .post(
-        "https://sheet.best/api/sheets/02df1873-d654-4ed9-a864-314f6ac7d0d5", 
-        tableData
+        "https://sheet.best/api/sheets/02df1873-d654-4ed9-a864-314f6ac7d0d5",
+        data 
       )
       .then((response)=>{
         alert("Row successfully added");
         console.log(response);
-      });
+      })
+      .catch(error => alert(error.message));
   };
 
   return (
@@ -36,11 +25,32 @@ function App() {
       <h1>Hello world</h1>
 
       <form onSubmit={handleSubmit(submitFormToGoogle)}>
-        <TextField {...register("name")} label="Name" />
-        <TextField {...register("age")} label="Age" />
-        <TextField {...register("salary")} label="Salary" />
-        <TextField {...register("hobby")} label="Hobby" />
-        <Button type="submit">Submit</Button>
+        <TextField 
+          name = "name"
+          error = {errors.name}
+          helperText = {errors.name && "The Name is Required"}
+          {...register("name", { required: true})} 
+          label="Name" 
+        />
+        <TextField 
+          error = {errors.age}
+          helperText = {errors.age && "The Age is Required"}
+          {...register("age", { required: true })} 
+          label="Age" 
+        />
+        <TextField 
+          error = {errors.salary}
+          helperText = {errors.salary && "The Salary is Required"}
+          {...register("salary", { required: true })} 
+          label="Salary" 
+        />
+        <TextField 
+          error = {errors.hobby}
+          helperText = {errors.hobby && "The Hobby is Required"}
+          {...register("hobby", { required: true })} 
+          label="Hobby" 
+        />
+        <Button variant="outlined" type="submit">Submit</Button>
       </form>
     </div>
   );
