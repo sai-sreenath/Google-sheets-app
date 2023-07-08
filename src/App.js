@@ -1,25 +1,24 @@
 import { Button, TextField } from "@mui/material";
 import './App.css';
-import { useRef } from "react";
 import axios from "axios";
+import { useForm } from "react-hook-form";
 
 function App() {
 
-  const nameInputRef = useRef(null);
-  const ageInputRef = useRef(null);
-  const salaryInputRef = useRef(null);
-  const hobbyInputRef = useRef(null);
+  const {register, handleSubmit} = useForm();
 
-  const handleSubmit = (e) =>{
-    e.preventDefault();
-    console.log("Submitted");
+  const submitFormToGoogle = (data) =>{
+
+    console.log(data);
+
+    const {name, age, salary, hobby} = data;
 
     const tableData = {
-      name: nameInputRef.current.value,
-      age: ageInputRef.current.value,
-      salary: salaryInputRef.current.value,
-      hobby: hobbyInputRef.current.value
-    }
+      name,
+      age,
+      salary,
+      hobby,
+    };
 
     axios
       .post(
@@ -27,6 +26,7 @@ function App() {
         tableData
       )
       .then((response)=>{
+        alert("Row successfully added");
         console.log(response);
       });
   };
@@ -35,11 +35,11 @@ function App() {
     <div className="app">
       <h1>Hello world</h1>
 
-      <form onClick={handleSubmit}>
-        <TextField inputRef={nameInputRef} label="Name" />
-        <TextField inputRef={ageInputRef} label="Age" />
-        <TextField inputRef={salaryInputRef} label="Salary" />
-        <TextField inputRef={hobbyInputRef} label="Hobby" />
+      <form onSubmit={handleSubmit(submitFormToGoogle)}>
+        <TextField {...register("name")} label="Name" />
+        <TextField {...register("age")} label="Age" />
+        <TextField {...register("salary")} label="Salary" />
+        <TextField {...register("hobby")} label="Hobby" />
         <Button type="submit">Submit</Button>
       </form>
     </div>
